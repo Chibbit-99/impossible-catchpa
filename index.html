@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mock CAPTCHA</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 7px 5px;
+      background: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .captcha {
+      width: 302px;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      background: #f9f9f9;
+      border: 1px solid #d3d3d3;
+      border-radius: 2px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+    }
+    .check {
+      appearance: none;
+      -webkit-appearance: none;
+      flex: none;
+      width: 28px;
+      height: 28px;
+      margin: 0 12px 0 0;
+      border: 2px solid #555;
+      border-radius: 2px;
+      background: #fff;
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+    }
+    .check:checked {
+      border-color: transparent;
+      background: transparent;
+    }
+    .check:checked::after {
+      content: "";
+      width: 22px;
+      height: 11px;
+      border-left: 3px solid #009b50;
+      border-bottom: 3px solid #009b50;
+      transform: translateY(-3px) rotate(-45deg);
+      animation: draw-tick .35s ease-out both;
+    }
+    @keyframes draw-tick {
+      from { clip-path: inset(0 100% 0 0); }
+      to { clip-path: inset(0); }
+    }
+    @property --sweep {
+      syntax: '<angle>';
+      inherits: false;
+      initial-value: 90deg;
+    }
+    .check.loading {
+      width: 32px;
+      height: 32px;
+      margin-left: -2px;
+      margin-right: 10px;
+      border: 0;
+      border-radius: 50%;
+      background: conic-gradient(#4285f4 0deg, #4285f4 var(--sweep), transparent var(--sweep));
+      -webkit-mask: radial-gradient(circle, transparent 0 10.2px, #000 11.2px);
+      mask: radial-gradient(circle, transparent 0 10.2px, #000 11.2px);
+      animation: spin .9s linear infinite, sweep 1.2s ease-in-out infinite alternate;
+      cursor: wait;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes sweep { from { --sweep: 45deg; } to { --sweep: 270deg; } }
+    @media (prefers-reduced-motion: reduce) {
+      .check.loading, .check:checked::after { animation: none; }
+    }
+    .check:focus-visible { outline: 2px solid #1a73e8; outline-offset: 3px; }
+    label { font-size: 14px; color: #111; cursor: pointer; white-space: nowrap; }
+    .brand {
+      margin-left: auto;
+      width: 58px;
+      text-align: center;
+      color: #555;
+      font-size: 10px;
+      line-height: 1;
+    }
+    .brand img { display: block; width: 32px; height: 32px; margin: 0 auto 3px; }
+    .captcha { position: relative; }
+    .error-message {
+      display: none;
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      color: #d93025;
+      font-size: 12px;
+    }
+    .captcha.error .error-message { display: block; }
+    .captcha.error .check { border-color: #d93025; }
+    .captcha.error .check, .captcha.error label { transform: translateY(8px); }
+    .settings {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: #333;
+    }
+    .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+    .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+    .slider { display: block; width: 100%; height: 100%; border-radius: 20px; background: #aaa; pointer-events: none; transition: background .2s; }
+    .slider::before { content: ''; display: block; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .2s; }
+    .switch input:checked + .slider { background: #4285f4; }
+    .switch input:checked + .slider::before { transform: translateX(16px); }
+    .switch input:focus-visible + .slider { outline: 2px solid #1a73e8; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <!-- This is a visual mockup only; it does not verify users. -->
+  <div class="captcha" aria-label="Mock CAPTCHA, not a security verification">
+    <span class="error-message" role="alert">Verification failed.</span>
+    <input class="check" type="checkbox" id="robot">
+    <label for="robot">I'm not a robot</label>
+    <div class="brand">
+      <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="">
+      reCAPTCHA
+    </div>
+  </div>
+  <div class="settings">
+    <label class="switch">
+      <input type="checkbox" id="fail-mode" aria-label="Simulate verification failure">
+      <span class="slider"></span>
+    </label>
+    <label for="fail-mode">Simulate verification failure</label>
+  </div>
+  <script>
+    const checkbox = document.getElementById('robot');
+    const failMode = document.getElementById('fail-mode');
+    const captcha = document.querySelector('.captcha');
+    checkbox.addEventListener('change', () => {
+      if (!checkbox.checked) return;
+      checkbox.checked = false;
+      captcha.classList.remove('error');
+      checkbox.disabled = true;
+      checkbox.classList.add('loading');
+      captcha.setAttribute('aria-busy', 'true');
+      setTimeout(() => {
+        checkbox.classList.remove('loading');
+        checkbox.checked = !failMode.checked;
+        captcha.classList.toggle('error', failMode.checked);
+        checkbox.disabled = false;
+        captcha.removeAttribute('aria-busy');
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
