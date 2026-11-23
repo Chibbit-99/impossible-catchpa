@@ -1,159 +1,115 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mock CAPTCHA</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 7px 5px;
-      background: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-    .captcha {
-      width: 302px;
-      height: 76px;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      background: #f9f9f9;
-      border: 1px solid #d3d3d3;
-      border-radius: 2px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
-    }
-    .check {
-      appearance: none;
-      -webkit-appearance: none;
-      flex: none;
-      width: 28px;
-      height: 28px;
-      margin: 0 12px 0 0;
-      border: 2px solid #555;
-      border-radius: 2px;
-      background: #fff;
-      cursor: pointer;
-      display: grid;
-      place-content: center;
-    }
-    .check:checked {
-      border-color: transparent;
-      background: transparent;
-    }
-    .check:checked::after {
-      content: "";
-      width: 22px;
-      height: 11px;
-      border-left: 3px solid #009b50;
-      border-bottom: 3px solid #009b50;
-      transform: translateY(-3px) rotate(-45deg);
-      animation: draw-tick .35s ease-out both;
-    }
-    @keyframes draw-tick {
-      from { clip-path: inset(0 100% 0 0); }
-      to { clip-path: inset(0); }
-    }
-    @property --sweep {
-      syntax: '<angle>';
-      inherits: false;
-      initial-value: 90deg;
-    }
-    .check.loading {
-      width: 32px;
-      height: 32px;
-      margin-left: -2px;
-      margin-right: 10px;
-      border: 0;
-      border-radius: 50%;
-      background: conic-gradient(#4285f4 0deg, #4285f4 var(--sweep), transparent var(--sweep));
-      -webkit-mask: radial-gradient(circle, transparent 0 10.2px, #000 11.2px);
-      mask: radial-gradient(circle, transparent 0 10.2px, #000 11.2px);
-      animation: spin .9s linear infinite, sweep 1.2s ease-in-out infinite alternate;
-      cursor: wait;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes sweep { from { --sweep: 45deg; } to { --sweep: 270deg; } }
-    @media (prefers-reduced-motion: reduce) {
-      .check.loading, .check:checked::after { animation: none; }
-    }
-    .check:focus-visible { outline: 2px solid #1a73e8; outline-offset: 3px; }
-    label { font-size: 14px; color: #111; cursor: pointer; white-space: nowrap; }
-    .brand {
-      margin-left: auto;
-      width: 58px;
-      text-align: center;
-      color: #555;
-      font-size: 10px;
-      line-height: 1;
-    }
-    .brand img { display: block; width: 32px; height: 32px; margin: 0 auto 3px; }
-    .captcha { position: relative; }
-    .error-message {
-      display: none;
-      position: absolute;
-      top: 3px;
-      left: 6px;
-      color: #d93025;
-      font-size: 12px;
-    }
-    .captcha.error .error-message { display: block; }
-    .captcha.error .check { border-color: #d93025; }
-    .captcha.error .check, .captcha.error label { transform: translateY(8px); }
-    .settings {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 14px;
-      font-size: 13px;
-      color: #333;
-    }
-    .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
-    .switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
-    .slider { display: block; width: 100%; height: 100%; border-radius: 20px; background: #aaa; pointer-events: none; transition: background .2s; }
-    .slider::before { content: ''; display: block; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: white; transition: transform .2s; }
-    .switch input:checked + .slider { background: #4285f4; }
-    .switch input:checked + .slider::before { transform: translateX(16px); }
-    .switch input:focus-visible + .slider { outline: 2px solid #1a73e8; outline-offset: 2px; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Human Verification Department</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#202124;background:#f3f5f8}*{box-sizing:border-box}body{margin:0}.app{max-width:980px;margin:auto;padding:38px 24px 70px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #dce1e8;padding-bottom:18px}.wordmark{font-weight:800;letter-spacing:-.04em;font-size:20px}.wordmark span{color:#4285f4}.badge,.eyebrow{font-size:11px;font-weight:bold;letter-spacing:.1em;text-transform:uppercase;color:#667085}.badge{background:#e5eaf2;padding:8px 11px;border-radius:20px}.intro{margin:38px 0 26px}.intro h1{font-size:clamp(30px,5vw,48px);letter-spacing:-.045em;margin:8px 0}.intro p{color:#667085;max-width:600px;line-height:1.6;margin:0}.layout{display:grid;grid-template-columns:302px 1fr;gap:22px;align-items:start}.panel{background:#fff;border:1px solid #dce1e8;border-radius:10px;padding:22px;box-shadow:0 8px 25px #25324a0a}.left{padding:0;background:none;border:0;box-shadow:none}.captcha{position:relative;width:302px;height:76px;display:flex;align-items:center;padding:0 12px;background:#f9f9f9;border:1px solid #d3d3d3;border-radius:2px;box-shadow:0 1px 2px #0002}.check{appearance:none;flex:none;width:28px;height:28px;margin:0 12px 0 0;border:2px solid #555;border-radius:2px;background:white;cursor:pointer;display:grid;place-content:center}.check:checked{border-color:transparent;background:transparent}.check:checked:after{content:"";width:22px;height:11px;border-left:3px solid #009b50;border-bottom:3px solid #009b50;transform:translateY(-3px) rotate(-45deg);animation:tick .35s ease-out}@keyframes tick{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0)}}@property --sweep{syntax:'<angle>';inherits:false;initial-value:90deg}.check.loading{width:32px;height:32px;margin-left:-2px;margin-right:10px;border:0;border-radius:50%;background:conic-gradient(#4285f4 0deg,#4285f4 var(--sweep),transparent var(--sweep));mask:radial-gradient(circle,transparent 0 10.2px,#000 11.2px);animation:spin .9s linear infinite,sweep 1.2s ease-in-out infinite alternate}@keyframes spin{to{transform:rotate(360deg)}}@keyframes sweep{from{--sweep:45deg}to{--sweep:270deg}}.captcha label{font-size:14px;white-space:nowrap;cursor:pointer}.brand{margin-left:auto;width:58px;text-align:center;color:#555;font-size:10px}.brand img{display:block;width:32px;height:32px;margin:0 auto 3px}.error{position:absolute;top:3px;left:6px;color:#d93025;font-size:11px}.captcha.failed .check{border-color:#d93025}.captcha.failed .check,.captcha.failed label{transform:translateY(8px)}.dossier{margin-top:20px}.dossier h2,.panel h2{font-size:16px;margin:0 0 12px}.dossier p{font-size:13px;line-height:1.5;color:#667085}.stat{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #edf0f3;font-size:13px}.stat strong{color:#202124}.progress{height:7px;background:#e9edf3;border-radius:10px;overflow:hidden;margin:12px 0}.progress span{display:block;background:#4285f4;height:100%;width:0;transition:width .3s}.main{min-height:330px}.stage-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px}.stage-number{font-size:12px;color:#4285f4;font-weight:bold}.pill{font-size:11px;padding:6px 9px;border-radius:15px;background:#edf3ff;color:#3267bf;font-weight:bold}.main h2{font-size:24px;letter-spacing:-.03em;margin:0 0 8px}.description{font-size:14px;color:#667085;line-height:1.55;margin:0 0 22px}.question{font-size:17px;font-weight:bold;line-height:1.4;margin:0 0 15px}.answers{display:grid;gap:8px}.answers button,.primary,.secondary{font:inherit;text-align:left;padding:12px 14px;border:1px solid #d9dfe8;border-radius:6px;background:#fff;cursor:pointer;color:#202124}.answers button:hover,.secondary:hover{border-color:#4285f4;background:#f4f8ff}.primary{background:#4285f4;color:#fff;border-color:#4285f4;font-weight:bold;text-align:center}.primary:hover{background:#316fd5}.secondary{font-size:13px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.feedback{border-left:3px solid #e89b31;padding:10px 12px;background:#fff8ec;color:#775116;font-size:13px;line-height:1.5;margin-top:16px}.feedback.good{border-color:#20a56b;background:#effaf5;color:#196640}.memory{display:grid;grid-template-columns:repeat(2,72px);gap:8px}.memory button{height:68px;border:0;border-radius:7px;cursor:pointer;font-size:23px;color:white;background:#4285f4}.memory button:nth-child(2){background:#e86d5d}.memory button:nth-child(3){background:#e4ac43}.memory button:nth-child(4){background:#43a780}.memory button.lit{filter:brightness(1.7);outline:3px solid #202124}.memory button:disabled{cursor:wait}input[type=text]{font:inherit;padding:12px;border:1px solid #bcc5d1;border-radius:6px;width:100%;max-width:430px}button:focus-visible,input:focus-visible{outline:3px solid #8bb4fa;outline-offset:2px}.footer{font-size:12px;color:#8b95a3;margin-top:24px;line-height:1.5}[hidden]{display:none!important}@media(max-width:700px){.app{padding:24px 16px 50px}.layout{grid-template-columns:1fr}.intro{margin:28px 0 20px}.captcha{max-width:100%}.dossier{margin-top:12px}.badge{display:none}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+body.initial{background:#fff}body.initial .app{max-width:none;margin:0;padding:7px 5px}body.initial .top,body.initial .intro,body.initial .dossier,body.initial .main,body.initial .footer{display:none}body.initial .layout{display:block}body.revealed .app{max-width:none;margin:0;padding:7px 5px}body.revealed .top,body.revealed .intro,body.revealed .dossier,body.revealed .footer{display:none}body.revealed .layout{display:flex;flex-wrap:wrap;gap:12px}body.revealed .main{width:360px;min-height:0;padding:0;border-radius:2px;overflow:hidden}.visual-head{background:#4285f4;color:white;padding:20px}.visual-head p{margin:0 0 5px;font-size:13px}.visual-head h2{font-size:24px;margin:0;color:white}.visual-instructions{font-size:12px;margin:10px 0 0!important;opacity:.9}.tile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px}.tile-grid button{position:relative;aspect-ratio:1;border:0;background:#e4edf2;cursor:pointer;font-size:42px}.tile-grid button:nth-child(3n+2){background:#dae8dc}.tile-grid button:nth-child(3n){background:#eae4d8}.tile-grid button.selected{outline:4px solid #4285f4;outline-offset:-4px}.tile-grid button.selected:after{content:'✓';position:absolute;top:5px;left:5px;border-radius:50%;background:#4285f4;color:white;font-size:14px;width:21px;height:21px;line-height:21px}.visual-bottom{padding:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}.visual-bottom p{font-size:12px;color:#67717c;margin:0}.visual-bottom button{flex:none}.visual-feedback{margin:0 12px 12px}.tile-grid button:focus-visible{z-index:1}
+</style>
 </head>
-<body>
-  <!-- This is a visual mockup only; it does not verify users. -->
-  <div class="captcha" aria-label="Mock CAPTCHA, not a security verification">
-    <span class="error-message" role="alert">Verification failed.</span>
-    <input class="check" type="checkbox" id="robot">
-    <label for="robot">I'm not a robot</label>
-    <div class="brand">
-      <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="">
-      reCAPTCHA
-    </div>
-  </div>
-  <div class="settings">
-    <label class="switch">
-      <input type="checkbox" id="fail-mode" aria-label="Simulate verification failure">
-      <span class="slider"></span>
-    </label>
-    <label for="fail-mode">Simulate verification failure</label>
-  </div>
-  <script>
-    const checkbox = document.getElementById('robot');
-    const failMode = document.getElementById('fail-mode');
-    const captcha = document.querySelector('.captcha');
-    checkbox.addEventListener('change', () => {
-      if (!checkbox.checked) return;
-      checkbox.checked = false;
-      captcha.classList.remove('error');
-      checkbox.disabled = true;
-      checkbox.classList.add('loading');
-      captcha.setAttribute('aria-busy', 'true');
-      setTimeout(() => {
-        checkbox.classList.remove('loading');
-        checkbox.checked = !failMode.checked;
-        captcha.classList.toggle('error', failMode.checked);
-        checkbox.disabled = false;
-        captcha.removeAttribute('aria-busy');
-      }, 1500);
-    });
-  </script>
-</body>
-</html>
+<body class="initial"><main class="app">
+<header class="top"><div class="wordmark"><span>●</span> HUMAN VERIFICATION DEPT.</div><div class="badge">Verification portal</div></header>
+<section class="intro"><div class="eyebrow">Identity verification</div><h1>Confirm you’re human.</h1><p>A routine identity check. Please answer a few questions to continue.</p></section>
+<div class="layout"><aside class="left"><div class="captcha" id="captcha"><span class="error" id="error" role="status" hidden></span><input class="check" type="checkbox" id="robot"><label for="robot">I'm not a robot</label><div class="brand"><img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" alt="">reCAPTCHA</div></div>
+<div class="panel dossier"><div class="eyebrow">Applicant file #H-404</div><h2>Verification progress</h2><div class="progress" role="progressbar" aria-label="Verification progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="bar"></span></div><div class="stat"><span>Departments cleared</span><strong id="progress">0 / 12</strong></div><div class="stat"><span>Suspicious answers</span><strong id="mistakes">0</strong></div><div class="stat"><span>Time in bureaucracy</span><strong id="clock">0:00</strong></div><p id="aside-note">Your patience is our most important metric. We do not know why.</p></div></aside>
+<section class="panel main" aria-live="polite"><div class="stage-header"><span class="stage-number" id="stage-number">APPLICATION PENDING</span><span class="pill" id="pill">Awaiting checkbox</span></div><div id="content"><h2>Welcome.</h2><p class="description">To get started, click the checkbox. Your application will be reviewed automatically.</p></div></section></div><p class="footer">A parody game. The checkbox and logo are visual references only; this page does not perform real verification or send your answers anywhere.</p></main>
+<script>
+const departments = [
+ {title:'Basic Verification',intro:'Please complete these ordinary questions about everyday situations.',questions:[['Which of these is a common way to browse the internet?',['A web browser','A calculator','A lamp'],0],['Which item would you use to write a note on paper?',['A spoon','A pen','A shoe'],1],['What might you do if your internet connection stops working?',['Restart the router','Water the keyboard','Turn off the lights'],0],['Which of these is typically used to make a phone call?',['A telephone','A pillow','A plate'],0]]},
+ {title:'Account Safety',intro:'A quick review of common account-safety practices.',questions:[['Which password is generally stronger?',['A long, unique passphrase','123456','Your first name'],0],['You receive an unexpected password reset email. What should you do?',['Ignore it and check your account directly','Share it with a stranger','Reply with your password'],0],['Where might an expected email sometimes end up?',['The spam folder','Inside the monitor','Under the desk'],0],['What makes passwords easier to manage?',['A password manager','Writing them on a banana','Using the same one everywhere'],0]]},
+ {title:'The Kitchen Experiment',intro:'Please demonstrate your relationship with food and other preventable disasters.',questions:[['You opened the fridge. Why?',['I forgot','To calibrate the cooling unit','To charge overnight'],0],['Toast is burning. The correct response is…',['Wave a towel at the smoke alarm','Reboot the toaster with sudo','Accept my silicon fate'],0],['How much pasta is one serving?',['An amount only knowable after cooking','Exactly 42 bytes','One entire chair'],0],['There is one biscuit left. You…',['Offer it, secretly hoping nobody takes it','Scan it for firmware','Install it as a driver'],0]]},
+ {title:'Emotional Support Tabs',intro:'Our researchers have detected a concerning number of open browser tabs.',questions:[['How many tabs are too many?',['There is no known upper limit','Exactly one','Zero, I browse in machine code'],0],['You open a new tab and immediately forget why. This is…',['A normal Tuesday','A memory allocation error','Physically impossible'],0],['A tab is playing music. Which one?',['We may never know','The one with the most RAM','The fridge'],0],['You bookmark an article to read later. When is later?',['A beautiful fictional place','Precisely 14:03:22','Before it was written'],0]]},
+ {title:'Social Calibration',intro:'Some of these questions have been reviewed by an actual person. They seemed tired.',questions:[['Someone waves. You wave back. They meant someone behind you.',['Commit to the wave anyway','Initiate self-destruct','Update facial recognition'],0],['A waiter says “enjoy your meal”. You reply…',['“You too” and think about it forever','“Acknowledged, food operator”','Dial-up modem noises'],0],['You send a risky text. Then you…',['Put the phone face down','Replace the battery with a potato','Delete the alphabet'],0],['A stranger holds the door from too far away. You…',['Do the awkward little jog','Hover over the ground','Enter standby mode'],0]]},
+ {title:'The Bureau of Time',intro:'Time is a human construct. So is being late to things.',questions:[['Your alarm goes off. What is five more minutes?',['A dangerous negotiation','Exactly 300 CPU cycles','A myth from ancient Greece'],0],['You arrive 20 minutes early. Where do you wait?',['In the car, pretending this was the plan','Inside the nearest clock','On the moon'],0],['You have a deadline tomorrow. When do you begin?',['After reorganising absolutely everything','Before the deadline was invented','During my nightly defragmentation'],0],['What happened to the weekend?',['Nobody knows','It was deleted by antivirus','It never existed'],0]]},
+ {title:'Department of Small Talk',intro:'The weather has been selected as a topic of vital national importance.',questions:[['Someone says “Lovely weather”. You say…',['“It is, isn’t it?”','“ATMOSPHERIC DATA RECEIVED”','“I am a cloud”'],0],['The lift is awkwardly silent. You inspect…',['The floor numbers, with great interest','Your internal wiring','The other person’s source code'],0],['A meeting could have been an email. You…',['Nod politely while thinking this exact thought','Transform into an email','Unplug the building'],0],['How do you end a conversation?',['Say goodbye at least three times','Power off immediately','Eject'],0]]},
+ {title:'Laundry Intelligence',intro:'Only a human could invent this much paperwork for socks.',questions:[['Where does the missing sock go?',['A dimension beyond our understanding','The cloud backup','Into the CPU'],0],['The washing machine finishes. You remember to empty it…',['Several hours later','Before it starts','Once every firmware update'],0],['What is the chair in your bedroom for?',['Clothes that are neither clean nor dirty','Processing spreadsheets','Docking'],0],['A fitted sheet must be folded. You…',['Make a vaguely rectangular ball','Consult the motherboard','Achieve geometric perfection'],0]]},
+ {title:'Existential Audit',intro:'Nearly done. Please remain appropriately uncertain about everything.',questions:[['At 3 a.m. you remember something embarrassing from ten years ago.',['Relive it in full cinematic detail','Clear cache','Request a software patch'],0],['A recipe says “season to taste”. You…',['Hope for the best','Measure in terabytes','Ask a satellite'],0],['You make a tiny mistake in public. How many people noticed?',['Probably nobody, but I will worry anyway','Every person on Earth','Only the surveillance drones'],0],['Do you know what you are doing?',['Not entirely, but here we are','I have perfect documentation','I am a printer'],0]]},
+ {title:'Administrative Review',intro:'Please answer honestly, or at least convincingly.',questions:[['What is the correct number of trips to carry groceries?',['One, regardless of the consequences','As many as the instruction manual specifies','Transmit groceries wirelessly'],0],['A bird looks at you. You think…',['“What does it know?”','“Fellow surveillance device”','“Download bird.exe”'],0],['You find a typo after sending an email. You…',['Consider moving to another country','Patch the recipient’s memory','Emit a diagnostic tone'],0],['After all this, are you still human?',['Probably. I could use a snack.','No, I am three printers in a coat','Please insert coin'],0]]}
+];
+departments.push(
+ {title:'The Emergency Department of Ducks',intro:'There is a duck in the server room. Management says this is unrelated. Management is also a duck.',questions:[['The duck requests your credentials.',['Politely decline','Quack my password','Promote the duck'],0],['A second duck arrives carrying a briefcase.',['Ask for its appointment','Hand over the building','Become the briefcase'],0],['The ducks have scheduled a meeting.',['Attend, cautiously','Eat the agenda','Declare myself a pond'],0],['The meeting could have been an email.',['Quack in agreement','Install a beak driver','Turn into soup'],0]]},
+ {title:'The Checkbox Has Gained Sentience',intro:'The checkbox has read your entire file. It has opinions. It has a tiny tie. Please do not mention the tie.',questions:[['The checkbox asks if it is human.',['Tell it everyone is doing their best','Unplug the moon','Request its birth certificate'],0],['It demands a promotion.',['Offer it senior checkbox','Promote the entire floor','Make it king of pasta'],0],['The printers begin chanting your name.',['Thank them for their service','Join their union immediately','Print a new universe'],0],['One last question: what was this all for?',['Honestly, nobody knows anymore','The ducks know','To summon the tax wizard'],0]]}
+);
+const $=id=>document.getElementById(id), checkbox=$('robot'), captcha=$('captcha'), content=$('content');
+let stage=0, question=0, practicalRound=0, mistakes=0, started=0, timer=null, busy=false, won=false;
+function update(){ if(started){document.body.className=stage<2?'revealed':'';} document.querySelector('.intro .eyebrow').textContent=stage<3?'Identity verification':stage<8?'Additional verification required':'THE SITUATION HAS ESCALATED'; document.querySelector('.intro h1').textContent=stage<3?'Confirm you’re human.':stage<8?'Prove you’re human. Again.':'The checkbox is in charge now.'; document.querySelector('.intro p').textContent=stage<3?'A routine identity check. Please answer a few questions to continue.':stage<8?'Your application requires a few additional checks. Please remain patient.':'The ducks have the paperwork. The printer has a lawyer. Everything is under control.'; $('progress').textContent=`${stage} / ${departments.length}`; $('mistakes').textContent=mistakes; const percent=Math.round(stage/departments.length*100); $('bar').style.width=percent+'%'; document.querySelector('[role=progressbar]').setAttribute('aria-valuenow',percent); }
+function time(){const s=Math.floor((Date.now()-started)/1000);$('clock').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+function button(text, fn, cls=''){const b=document.createElement('button');b.type='button';b.textContent=text;if(cls)b.className=cls;b.addEventListener('click',fn);return b}
+function startCheck(){if(busy||won)return; if(!started){started=Date.now();timer=setInterval(time,1000);document.body.className='revealed'} busy=true;checkbox.checked=false;checkbox.disabled=true;captcha.classList.remove('failed');$('error').hidden=true;checkbox.classList.add('loading');captcha.setAttribute('aria-busy','true');$('pill').textContent='Checking…';setTimeout(()=>{busy=false;checkbox.classList.remove('loading');captcha.removeAttribute('aria-busy');if(stage===departments.length){win();return} captcha.classList.add('failed');$('error').textContent=(stage<2?'Verification incomplete. Please continue.':stage<6?'Verification failed. Still suspicious.':stage<10?'Verification failed. The box is concerned.':'Verification failed. The ducks insist.');$('error').hidden=false; $('pill').textContent='Further review required';if(stage<3)showVisual();else showInterview();},1400)}
+checkbox.addEventListener('change',()=>{if(checkbox.checked)startCheck()});
+function showVisual(){
+  $('stage-number').textContent=`VISUAL VERIFICATION ${stage+1} OF 3`;content.replaceChildren();
+  const puzzles=[
+    {target:'traffic lights', items:[['🚦',1],['🚗',0],['🌳',0],['🏠',0],['🚦',1],['🚲',0],['🚦',1],['☁️',0],['🚶',0]], note:'Select every square containing a traffic light.'},
+    {target:'buses',items:[['🚌',1],['🏠',0],['🚕',0],['🌳',0],['🚌',1],['🚲',0],['🚗',0],['🚌',1],['🏢',0]],note:'Select every square containing a bus.'},
+    {target:'suspicious ducks',items:[['🦆',1],['🚗',0],['🌳',0],['🦆',1],['🏠',0],['🐈',0],['🦆',1],['☁️',0],['🚲',0]],note:'Select the ducks. They know what they did.'}
+  ];
+  const puzzle=puzzles[stage], picked=new Set();const header=document.createElement('div');header.className='visual-head';const over=document.createElement('p');over.textContent='Select all squares with';const title=document.createElement('h2');title.textContent=puzzle.target;const instruction=document.createElement('p');instruction.className='visual-instructions';instruction.textContent=puzzle.note;header.append(over,title,instruction);
+  const grid=document.createElement('div');grid.className='tile-grid';grid.setAttribute('role','group');grid.setAttribute('aria-label','Image selection');puzzle.items.forEach(([icon],i)=>{const b=button(icon,()=>{if(picked.has(i)){picked.delete(i);b.classList.remove('selected');b.setAttribute('aria-pressed','false')}else{picked.add(i);b.classList.add('selected');b.setAttribute('aria-pressed','true')}});b.setAttribute('aria-label',`${['traffic light','car','tree','house','traffic light','bicycle','traffic light','cloud','person'][i]} (tile ${i+1})`);if(stage!==0)b.setAttribute('aria-label',`${icon} tile ${i+1}`);b.setAttribute('aria-pressed','false');grid.appendChild(b)});
+  const bottom=document.createElement('div');bottom.className='visual-bottom';const hint=document.createElement('p');hint.textContent='Select all matching squares.';const verify=button('Verify',()=>{const correct=puzzle.items.every((item,i)=>picked.has(i)===!!item[1]);if(!correct){mistakes++;update();feedback.hidden=false;feedback.textContent='Please select all matching squares and try again.';return} if(stage===0){stage++;update();departmentDone()}else{showMiniGame()}},'primary');bottom.append(hint,verify);const feedback=document.createElement('div');feedback.className='feedback visual-feedback';feedback.hidden=true;content.append(header,grid,bottom,feedback);
+}
+function showQuestion(){const d=departments[stage], q=d.questions[question];$('stage-number').textContent=`DEPARTMENT ${stage+1} OF ${departments.length} · QUESTION ${question+1} OF ${d.questions.length}`;content.replaceChildren();const h=document.createElement('h2');h.textContent=d.title;const desc=document.createElement('p');desc.className='description';desc.textContent=d.intro;const prompt=document.createElement('p');prompt.className='question';prompt.textContent=q[0];const choices=document.createElement('div');choices.className='answers';const msg=document.createElement('div');msg.className='feedback';msg.hidden=true;q[1].forEach((answer,i)=>choices.appendChild(button(answer,()=>{if(i!==q[2]){mistakes++;update();msg.hidden=false;msg.textContent=stage<2?'Not quite. Please try again.':stage<7?'Interesting. The machine is not convinced. Try another answer.':'The committee has screamed into a filing cabinet. Try again.';return}choices.replaceChildren();msg.hidden=false;msg.className='feedback good';msg.textContent=stage<2?'Correct. Please continue.':stage<7?'Plausibly human. The investigation continues.':'Accepted. A distant printer applauds.';const next=button(question===d.questions.length-1?'Complete department →':'Next question →',()=>{question++;if(question===d.questions.length){question=0;showMiniGame()}else showQuestion()},'primary');choices.appendChild(next);next.focus()})));content.append(h,desc,prompt,choices,msg)}
+const interviews = [
+  {question:'Why do you think you are a human?',hint:'There are no wrong answers. The system has been instructed not to laugh.',reply:'Interesting. We have forwarded your statement to a panel of people who have also never been entirely sure.',follow:'How certain are you?',choices:['Fairly certain','Depends on the day','Please stop asking'],response:'Your confidence level has been recorded as “complicated.”'},
+  {question:'Describe a very ordinary thing you did today.',hint:'Please do not include your name or other personal information.',reply:'Thank you. Our normality detector made a small noise. We think that is good.',follow:'Was anyone watching?',choices:['Probably not','The birds might have been','I would rather not know'],response:'The birds have declined to comment.'},
+  {question:'What would you say to a toaster who feels unappreciated?',hint:'The toaster is listening. Be kind.',reply:'The toaster has asked us to read that back. It is facing the wall now.',follow:'The toaster wants a job title. Choose one.',choices:['Senior Toast Consultant','Bread Transformation Officer','Your Majesty'],response:'The toaster has updated its email signature.'},
+  {question:'If your socks could testify against you, what would they say?',hint:'This is not a court of law. The socks insisted on that distinction.',reply:'We have placed your testimony in an envelope. The envelope is visibly nervous.',follow:'One sock is missing. What should we tell its family?',choices:['It went to a better drawer','We are doing everything we can','It was promoted'],response:'The remaining sock nodded solemnly.'},
+  {question:'The checkbox would like to know if you have ever felt like a checkbox.',hint:'Take your time. The checkbox has cleared its afternoon.',reply:'The checkbox has become very quiet. We think you have given it something to think about.',follow:'It asks if you can be friends.',choices:['Yes, of course','Let’s take it slowly','Only outside work'],response:'A tiny friendship request has been filed in triplicate.'},
+  {question:'A duck walks into your evaluation. What is its name?',hint:'The duck is wearing a tie. It is not here by accident.',reply:'The duck has accepted this name and immediately requested a larger office.',follow:'The duck presents you with an invoice for being observed.',choices:['Dispute the invoice','Pay in breadcrumbs','Ask for an itemised quack'],response:'The duck stamps your request with a damp foot.'},
+  {question:'The office printer has begun predicting the future. What does it predict for you?',hint:'Please do not feed it paper after midnight.',reply:'The printer has printed your answer on fourteen pages. All fourteen are blank.',follow:'The printer requests a sacrifice.',choices:['A single paperclip','A sincere compliment','The concept of Tuesday'],response:'The printer hums approvingly. Tuesday remains under review.'},
+  {question:'Why should the moon trust you with its password?',hint:'The moon has been remarkably patient throughout this process.',reply:'The moon says it will think about it. The moon is a surprisingly slow typist.',follow:'The moon is now in the waiting room.',choices:['Offer it a chair','Offer it cheese','Pretend this is normal'],response:'The moon takes a number. It is number 4,000,000,001.'},
+  {question:'One final question: who verifies the verifier?',hint:'The checkbox is trembling. The ducks have formed a circle.',reply:'Nobody speaks. Somewhere, a single stapler closes. The checkbox whispers: “fair enough.”',follow:'The entire department looks to you for leadership.',choices:['Set everyone free','Schedule another meeting','Give the ducks a long weekend'],response:'The ducks cheer. The printer cries a small, perfectly rectangular tear.'}
+];
+function showInterview(){
+  const interview=interviews[Math.min(stage-3,interviews.length-1)];
+  $('stage-number').textContent=`DEPARTMENT ${stage+1} OF ${departments.length} · INTERVIEW`;$('pill').textContent=stage<5?'Further information requested':stage<9?'The situation is developing':'PLEASE REMAIN CALM';
+  content.replaceChildren();const h=document.createElement('h2');h.textContent=interview.question;const desc=document.createElement('p');desc.className='description';desc.textContent=interview.hint;
+  const form=document.createElement('form');const input=document.createElement('textarea');input.rows=3;input.maxLength=500;input.required=true;input.placeholder='Your answer…';input.setAttribute('aria-label',interview.question);input.style.cssText='font:inherit;padding:12px;border:1px solid #bcc5d1;border-radius:6px;width:100%;resize:vertical';const submit=button('Submit statement →',()=>{},'primary');submit.type='submit';submit.style.marginTop='10px';const note=document.createElement('p');note.className='description';note.style.marginTop='10px';note.textContent='Your answer stays on this page and is not sent anywhere.';form.append(input,submit,note);
+  form.addEventListener('submit',event=>{event.preventDefault();if(!input.value.trim()){input.focus();return}form.replaceChildren();const reply=document.createElement('div');reply.className='feedback good';reply.textContent=interview.reply;const next=button('Continue →',()=>{form.replaceChildren();const follow=document.createElement('p');follow.className='question';follow.textContent=interview.follow;const answers=document.createElement('div');answers.className='answers';interview.choices.forEach(choice=>answers.appendChild(button(choice,()=>{answers.replaceChildren();reply.textContent=interview.response;answers.appendChild(reply);const proceed=button('Continue the investigation →',showMiniGame,'primary');answers.appendChild(proceed);proceed.focus()})));form.append(follow,answers);},'primary');next.style.marginTop='15px';form.append(reply,next);next.focus()});content.append(h,desc,form);
+}
+function finishDepartment(){if(stage>=3 && practicalRound===0){practicalRound=1;showMiniGame();return}practicalRound=0;stage++;update();departmentDone()}
+function showMiniGame(){
+  const type=(stage+practicalRound)%4;
+  if(type===0){showMemory();return}
+  $('stage-number').textContent=`DEPARTMENT ${stage+1} OF ${departments.length} · PRACTICAL TEST ${practicalRound+1}${stage>=3?" OF 2":""}`;
+  $('pill').textContent='Practical assessment';content.replaceChildren();
+  const h=document.createElement('h2'),desc=document.createElement('p'),area=document.createElement('div'),msg=document.createElement('div');desc.className='description';msg.className='feedback';msg.hidden=true;area.className='answers';
+  const done=()=>{area.replaceChildren();msg.hidden=false;msg.className='feedback good';msg.textContent=stage<4?'Assessment complete.':'The committee reluctantly stamps your paperwork. A stamp screams.';area.appendChild(button('Collect approval →',finishDepartment,'primary'))};
+  const wrong=(text)=>{mistakes++;update();msg.hidden=false;msg.textContent=text};
+  if(type===1){
+    h.textContent=stage<3?'Select the everyday objects':'Select the evidence';desc.textContent=stage<3?'Select all four items you might find on a desk.':'Select all four items that belong in the emergency duck kit. Avoid the suspicious items.';
+    const items=stage<3?[['Pen',1],['Notebook',1],['Keyboard',1],['Mug',1],['Volcano',0],['Submarine',0],['Cloud',0],['Giraffe',0],['Moon',0]]:[['Bread crumbs',1],['Tiny umbrella',1],['Official pond permit',1],['Duck-sized tie',1],['Tax volcano',0],['Angry spreadsheet',0],['Unlicensed moon',0],['Infinite soup',0],['A bigger duck',0]];
+    const grid=document.createElement('div');grid.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:8px';let selected=0;
+    items.sort(()=>Math.random()-.5).forEach(([label,good])=>{const b=button(label,()=>{if(!good){wrong('That item was not requested. Please try another.');return}b.disabled=true;b.style.background='#e1f5eb';selected++;msg.hidden=false;msg.className='feedback';msg.textContent=`${selected} of 4 selected.`;if(selected===4)done()});b.style.cssText='min-height:65px;border:1px solid #d9dfe8;border-radius:6px;background:#fff;cursor:pointer;padding:8px';grid.appendChild(b)});area.appendChild(grid);
+  }else if(type===2){
+    h.textContent='Put the paperwork in order';desc.textContent=stage<5?'Click the steps in the order you would make a cup of tea.':'Click the steps of the increasingly concerning office procedure in order.';
+    const steps=stage<5?['Fill the kettle','Boil the water','Add water to the tea','Wait, then drink']:['Find the duck','Offer the duck a chair','Ask the duck for approval','File the duck’s response'];let next=0;
+    [...steps].sort(()=>Math.random()-.5).forEach(item=>{const b=button(item,()=>{if(item!==steps[next]){wrong('Not that step yet. The paperwork must be chronological.');return}b.disabled=true;b.textContent=`✓ ${item}`;next++;msg.hidden=false;msg.className='feedback';msg.textContent=`Step ${next} of ${steps.length} filed.`;if(next===steps.length)done()});area.appendChild(b)});
+  }else{
+    h.textContent='Transcription desk';const phrase=stage<5?'I am a human being':stage<7?'The printer knows what I did':stage<9?'My paperwork has paperwork':'I accept the duck as my manager';desc.textContent='Type the sentence exactly as shown below. Capitalization does not matter.';const quote=document.createElement('p');quote.className='question';quote.textContent='“'+phrase+'”';const form=document.createElement('form');const input=document.createElement('input');input.type='text';input.autocomplete='off';input.setAttribute('aria-label','Type the sentence');const submit=button('Submit transcription',()=>{},'primary');submit.type='submit';form.append(input,submit);form.style.cssText='display:flex;gap:8px;flex-wrap:wrap';form.addEventListener('submit',e=>{e.preventDefault();if(input.value.trim().toLowerCase()===phrase.toLowerCase())done();else wrong('The transcription does not match. Check it and try again.')});area.append(quote,form);
+  }
+  content.append(h,desc,area,msg);
+}
+function showMemory(){
+  $('stage-number').textContent=`DEPARTMENT ${stage+1} OF ${departments.length} · MEMORY CHECK`;
+  $('pill').textContent='One more formality';
+  content.replaceChildren();
+  const h=document.createElement('h2');h.textContent=stage===0?'Attention check':'The totally necessary memory test';
+  const desc=document.createElement('p');desc.className='description';desc.textContent=stage===0?'Watch the sequence, then repeat it to complete this simple attention check.':stage<6?'Watch the sequence, then repeat it. Apparently remembering colors is a legal requirement now.':'Repeat the sequence. The colors are watching back. Do not make it weird.';
+  const board=document.createElement('div');board.className='memory';
+  const msg=document.createElement('div');msg.className='feedback';msg.textContent='Press play when you are ready.';
+  const actions=document.createElement('div');actions.className='actions';
+  const names=['Blue','Coral','Gold','Green'];const sequence=Array.from({length:Math.min(4+Math.floor(stage/2),8)},()=>Math.floor(Math.random()*4));
+  let position=0, playing=false, accepting=false;
+  const tiles=names.map((name,i)=>{const b=button(name,()=>choose(i));b.setAttribute('aria-label',name);board.appendChild(b);return b});
+  function play(){if(playing)return;playing=true;accepting=false;position=0;tiles.forEach(b=>b.disabled=true);playButton.disabled=true;msg.className='feedback';msg.textContent='Watch closely…';let step=0;function flash(){if(step===sequence.length){playing=false;accepting=true;tiles.forEach(b=>b.disabled=false);playButton.disabled=false;msg.textContent='Your turn. Repeat the sequence.';return}const tile=tiles[sequence[step++]];tile.classList.add('lit');setTimeout(()=>{tile.classList.remove('lit');setTimeout(flash,250)},550)}setTimeout(flash,400)}
+  function choose(i){if(!accepting)return;if(i!==sequence[position]){mistakes++;update();accepting=false;msg.className='feedback';msg.textContent='The machine has noted your very human memory lapse. Press play to try the same sequence again.';return}position++;if(position===sequence.length){accepting=false;tiles.forEach(b=>b.disabled=true);playButton.disabled=true;msg.className='feedback good';msg.textContent='Sequence accepted. Your neurons are doing excellent paperwork.';const next=button('Collect approval →',finishDepartment,'primary');actions.appendChild(next);next.focus()}else{msg.textContent=`Correct so far: ${position} of ${sequence.length}.`}}
+  const playButton=button('Play sequence',play,'secondary');actions.appendChild(playButton);content.append(h,desc,board,actions,msg);
+}
+function departmentDone(){captcha.classList.remove('failed');$('error').hidden=true;checkbox.disabled=false;$('stage-number').textContent='DEPARTMENT CLEARED';$('pill').textContent='Checkbox ready';content.replaceChildren();const h=document.createElement('h2');h.textContent=stage===departments.length?'Surely that was enough?':'Excellent. Unfortunately…';const p=document.createElement('p');p.className='description';p.textContent=stage===departments.length?'All departments have signed your paperwork. Click the checkbox one last time to receive your highly unofficial verdict.':stage<2?'Your answers have been recorded. Please click the checkbox to continue.':stage<6?'Your answers have been filed under “probably human.” Please click the checkbox again.':stage<10?'Your paperwork has been forwarded to a department that was not here yesterday. Click the checkbox again.':'The checkbox has acquired legal representation. Click it again before the ducks notice.';content.append(h,p);checkbox.focus()}
+function win(){won=true;checkbox.checked=true;checkbox.disabled=true;clearInterval(timer);time();$('stage-number').textContent='CASE CLOSED';$('pill').textContent='Human verified';content.replaceChildren();const h=document.createElement('h2');h.textContent='Congratulations, human(ish)!';const p=document.createElement('p');p.className='description';p.textContent=`After ${$('clock').textContent} and ${mistakes} suspicious answer${mistakes===1?'':'s'}, the department has reluctantly concluded that you are probably a person. Your imaginary certificate is in the mail.`;const replay=button('Start a new application',reset,'primary');content.append(h,p,replay);replay.focus();$('aside-note').textContent='Case closed. Please do not frame the imaginary certificate.'}
+function reset(){stage=0;question=0;practicalRound=0;mistakes=0;started=0;won=false;busy=false;document.body.className='initial';clearInterval(timer);$('clock').textContent='0:00';$('aside-note').textContent='Your patience is our most important metric. We do not know why.';checkbox.checked=false;checkbox.disabled=false;captcha.classList.remove('failed');$('error').hidden=true;update();$('stage-number').textContent='APPLICATION PENDING';$('pill').textContent='Awaiting checkbox';content.innerHTML='<h2>Welcome back, alleged human.</h2><p class="description">Click the checkbox to submit a fresh application. The paperwork has somehow multiplied.</p>';checkbox.focus()}
+update();
+</script></body></html>
